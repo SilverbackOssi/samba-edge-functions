@@ -6,18 +6,28 @@ const fontData = await fetch(
 ).then((res) => res.arrayBuffer());
 
 export default async function handler(req: Request) {
+  // Extract text from URL path
+  const url = new URL(req.url);
+  const pathParts = url.pathname.split('/').filter(Boolean);
+  // Find the index of the function name and get the next part
+  const funcName =  'og-image';
+  const ogImageIndex = pathParts.findIndex(part => part === funcName);
+  const customText = (ogImageIndex >= 0 && pathParts[ogImageIndex + 1])
+    ? decodeURIComponent(pathParts[ogImageIndex + 1])
+    : 'Hello SVG OG-image! Ossi was here.';
+
   const svg = await satori(
     {
       type: 'div',
       props: {
-        children: 'Hello OG image!',
+        children: customText,
         style: {
-          width: '100%',
+          width: '50%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 128,
+          fontSize: 64,
           background: 'lavender',
           fontFamily: 'Inter',
         },
